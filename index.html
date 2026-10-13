@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CleanMac Care — Reclaim space, with care.</title>
+<meta name="description" content="A safety-first Mac cleaner. No FUD. No fake malware. Just real disk space, real duplicates, and a transparent storage map. macOS 13.0+." />
+<style>
+  :root {
+    --accent:    oklch(0.62 0.14 60);
+    --accent-hi: oklch(0.70 0.15 60);
+    --teal:      oklch(0.70 0.10 195);
+    --bg:        oklch(0.16 0.012 250);
+    --bg-2:      oklch(0.21 0.012 250);
+    --bg-3:      oklch(0.26 0.013 250);
+    --text:      oklch(0.96 0.005 250);
+    --muted:     oklch(0.72 0.010 250);
+    --subtle:    oklch(0.55 0.010 250);
+    --border:    oklch(0.32 0.014 250);
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+  }
+  *,*::before,*::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    color: var(--text);
+    background:
+      radial-gradient(ellipse at 80% -10%, oklch(0.62 0.14 60 / .15), transparent 50%),
+      radial-gradient(ellipse at 0% 110%, oklch(0.70 0.10 195 / .12), transparent 55%),
+      var(--bg);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a { color: var(--accent-hi); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 28px; }
+
+  /* Nav */
+  nav.top {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 12px;
+  }
+  nav.top .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; letter-spacing: -.01em;
+  }
+  nav.top .brand .icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(155deg, var(--accent), var(--teal));
+    display: grid; place-items: center;
+    box-shadow: 0 8px 22px -8px oklch(0.62 0.14 60 / .55);
+  }
+  nav.top .links { margin-left: auto; display: flex; gap: 22px; font-size: 14px; color: var(--muted); }
+
+  /* Hero */
+  .hero {
+    padding: 64px 0 48px;
+    text-align: center;
+  }
+  .eyebrow {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.10em;
+    color: var(--accent-hi); text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 6vw, 64px);
+    line-height: 1.05; letter-spacing: -.025em;
+    margin: 14px auto 18px;
+    max-width: 780px;
+    font-weight: 800;
+  }
+  .hero p.lede {
+    font-size: 18px; color: var(--muted);
+    max-width: 640px; margin: 0 auto 28px;
+  }
+  .cta-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 15px; font-weight: 600; letter-spacing: -.005em;
+    border: none; cursor: pointer;
+    transition: transform .08s, filter .12s;
+  }
+  .btn:hover { filter: brightness(1.05); }
+  .btn:active { transform: translateY(.5px); }
+  .btn.primary {
+    background: linear-gradient(155deg, var(--accent), var(--teal));
+    color: oklch(0.99 0.005 60);
+    box-shadow: inset 0 .5px 0 rgba(255,255,255,.25), 0 8px 24px -8px oklch(0.62 0.14 60 / .55);
+  }
+  .btn.secondary {
+    background: var(--bg-3); color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .meta { font-size: 12px; color: var(--subtle); margin-top: 14px; }
+
+  /* Trust bar */
+  .trust {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 24px;
+    padding: 18px 0 0;
+    font-size: 12px; color: var(--muted);
+  }
+  .trust span { display: inline-flex; align-items: center; gap: 6px; }
+  .trust .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--teal);
+  }
+
+  /* Sections */
+  section.block {
+    padding: 64px 0;
+    border-top: 1px solid var(--border);
+  }
+  .h2 {
+    font-size: 32px; letter-spacing: -.02em; font-weight: 800;
+    margin: 0 0 8px; max-width: 720px;
+  }
+  .sub {
+    font-size: 16px; color: var(--muted); margin: 0 0 32px; max-width: 640px;
+  }
+
+  /* Feature grid */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  @media (max-width: 720px) { .grid-3 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .card .icon-pill {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: oklch(0.62 0.14 60 / .18);
+    display: grid; place-items: center;
+    color: var(--accent-hi);
+    margin-bottom: 14px;
+    font-size: 20px;
+  }
+  .card h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -.015em; }
+  .card p  { margin: 0; color: var(--muted); font-size: 14px; }
+
+  /* What we don't do */
+  .not-list {
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 720px) { .not-list { grid-template-columns: 1fr; } }
+  .not-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 14px 16px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px; color: var(--muted);
+  }
+  .not-row .x {
+    flex-shrink: 0;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: oklch(0.32 0.014 250);
+    color: var(--subtle);
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: bold;
+  }
+  .not-row strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+  /* Pricing */
+  .price-card {
+    max-width: 480px; margin: 0 auto;
+    background: var(--bg-2);
+    border: 2px solid var(--accent);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 30px 80px -30px oklch(0.62 0.14 60 / .35);
+  }
+  .price-card .price {
+    font-size: 44px; font-weight: 800; letter-spacing: -.025em;
+    margin: 8px 0;
+  }
+  .price-card .per { color: var(--muted); font-size: 14px; }
+  .price-card ul {
+    text-align: left; padding: 0 0 0 0;
+    margin: 22px auto 22px;
+    list-style: none;
+    max-width: 320px;
+  }
+  .price-card li {
+    padding: 6px 0; color: var(--text); font-size: 14px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .price-card li::before {
+    content: "✓"; color: var(--teal); font-weight: 700; flex-shrink: 0;
+  }
+
+  /* Footer */
+  footer {
+    padding: 40px 0 32px;
+    border-top: 1px solid var(--border);
+    color: var(--subtle); font-size: 12px;
+  }
+  footer .row {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="top">
+    <div class="brand">
+      <div class="icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+          <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>
+        </svg>
+      </div>
+      CleanMac Care
+    </div>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="eyebrow">Mac App Store · macOS 13.0 Ventura+</div>
+    <h1>Reclaim space, with care.</h1>
+    <p class="lede">
+      The honest Mac cleaner. Real bytes only. No fake malware warnings.
+      No RAM theatre. Just disk space, true duplicates, and a transparent
+      storage map. Cleanup moves items to macOS Trash first and tracks them
+      in Quarantine while they remain there.
+    </p>
+    <div class="cta-row">
+      <a class="btn primary" href="#pricing">
+        Get CleanMac Care
+      </a>
+      <a class="btn secondary" href="#features">See how it works</a>
+    </div>
+    <div class="meta">14-day free trial for eligible new subscribers · Cancel anytime in App Store account settings.</div>
+
+    <div class="trust">
+      <span><span class="dot"></span>Sandboxed by design</span>
+      <span><span class="dot"></span>Full Disk Access is optional</span>
+      <span><span class="dot"></span>No telemetry</span>
+      <span><span class="dot"></span>Trash-backed, reversible cleanup</span>
+    </div>
+  </header>
+
+  <section id="features" class="block">
+    <h2 class="h2">Three features that earn your trust.</h2>
+    <p class="sub">No bloat. No upsells for things your Mac doesn't need.</p>
+    <div class="grid-3">
+      <div class="card">
+        <div class="icon-pill" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h4M17 12h4M12 3v4M12 17v4"/></svg>
+        </div>
+        <h3>Smart Scan</h3>
+        <p>Caches, old logs, partial downloads, iOS backups, and Trash — every finding has a "Why safe?" rationale you can read before anything moves.</p>
+      </div>
+      <div class="card">
+        <div class="icon-pill" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="12" height="12" rx="2"/><rect x="9" y="9" width="11" height="11" rx="2"/></svg>
+        </div>
+        <h3>True duplicates</h3>
+        <p>SHA-256 verified exact matches and perceptual-hash similar photos. Smart-select rules pick the keeper; you always have the final say.</p>
+      </div>
+      <div class="card">
+        <div class="icon-pill" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="12" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="17" width="8" height="4" rx="1.5"/></svg>
+        </div>
+        <h3>Storage Map</h3>
+        <p>Squarified treemap of your home folder. Hover for size. Click to drill. Right-click to reveal in Finder.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacy" class="block">
+    <h2 class="h2">What we don't do.</h2>
+    <p class="sub">Most of the Mac cleaner category is built on theatre. We're not.</p>
+    <div class="not-list">
+      <div class="not-row">
+        <div class="x">✕</div>
+        <div><strong>No fake malware warnings</strong>We don't scan for malware. Your Mac has Gatekeeper and XProtect.</div>
+      </div>
+      <div class="not-row">
+        <div class="x">✕</div>
+        <div><strong>No "RAM optimization"</strong>macOS manages memory better than any third-party tool. Period.</div>
+      </div>
+      <div class="not-row">
+        <div class="x">✕</div>
+        <div><strong>No forced Full Disk Access</strong>It is optional. The app primarily uses folders you explicitly grant.</div>
+      </div>
+      <div class="not-row">
+        <div class="x">✕</div>
+        <div><strong>No "purgeable space" tricks</strong>Every byte we report is real recoverable space.</div>
+      </div>
+      <div class="not-row">
+        <div class="x">✕</div>
+        <div><strong>No tracking or telemetry</strong>Diagnostics stay on your Mac unless you explicitly export a report.</div>
+      </div>
+      <div class="not-row">
+        <div class="x">✕</div>
+        <div><strong>No instant-delete on the first pass</strong>Items move to macOS Trash and remain tracked in Quarantine while Trash still has them.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="block">
+    <h2 class="h2" style="text-align:center;">Honest pricing.</h2>
+    <p class="sub" style="text-align:center; margin-left:auto; margin-right:auto;">One subscription. Eligible new subscribers receive a 14-day free trial. Cancel anytime.</p>
+    <div class="price-card">
+      <div class="eyebrow">Premium</div>
+      <div class="price">$24.99<span style="font-size:18px;color:var(--muted);font-weight:600;">/yr</span></div>
+      <div class="per">14-day free trial for eligible new subscribers · Apple-managed billing</div>
+      <ul>
+        <li>Smart Scan with safety quarantine</li>
+        <li>Exact-duplicate finder (SHA-256)</li>
+        <li>Similar-photo finder (perceptual hash)</li>
+        <li>Interactive Storage Map</li>
+        <li>Trash-backed reversible cleanup</li>
+        <li>VoiceOver-ready · WCAG AA</li>
+      </ul>
+      <a class="btn primary" href="https://apps.apple.com/app/id6764470981" style="display:inline-flex;">View on the Mac App Store</a>
+      <div class="meta" style="margin-top:14px;">App Store distribution. macOS 13.0 Ventura or later.</div>
+    </div>
+  </section>
+
+  <section id="faq" class="block">
+    <h2 class="h2">FAQ</h2>
+    <div class="grid-3" style="grid-template-columns: 1fr 1fr;">
+      <div class="card">
+        <h3>Is anything ever lost forever?</h3>
+        <p>Not on the first pass. Cleanup moves items to macOS Trash and tracks them in Quarantine while Finder Trash still has them. Finder may empty Trash sooner based on your macOS settings.</p>
+      </div>
+      <div class="card">
+        <h3>How does app uninstall work?</h3>
+        <p>CleanMac Care can remove app bundles and leftovers that macOS allows it to access. Protected files remain visible with a permission explanation instead of being silently ignored.</p>
+      </div>
+      <div class="card">
+        <h3>Where's my data?</h3>
+        <p>On your Mac. We never send file contents, names, or paths off your machine. Anonymous crash reports are opt-in only.</p>
+      </div>
+      <div class="card">
+        <h3>Apple Silicon and Intel?</h3>
+        <p>Universal binary. Both first-class.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="row">
+      <div>© 2026 CleanMac Care. All rights reserved.</div>
+      <div>
+        <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="support.html">Support</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>
